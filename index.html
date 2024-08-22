@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <!-- Meta Pixel Code -->
+  <script>
+  !function(f,b,e,v,n,t,s)
+  {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+  n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+  if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+  n.queue=[];t=b.createElement(e);t.async=!0;
+  t.src=v;s=b.getElementsByTagName(e)[0];
+  s.parentNode.insertBefore(t,s)}(window, document,'script',
+  'https://connect.facebook.net/en_US/fbevents.js');
+  fbq('init', '504977125397304');
+  fbq('track', 'PageView');
+  </script>
+  <noscript><img height="1" width="1" style="display:none"
+  src="https://www.facebook.com/tr?id=504977125397304&ev=PageView&noscript=1"
+  /></noscript>
+  <!-- End Meta Pixel Code -->
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Emulador Espião Mines</title>
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      background: linear-gradient(135deg, #4a90e2, #0057e7);
+      color: #fff;
+      font-family: 'Roboto', sans-serif;
+      background-image: url('https://www.transparenttextures.com/patterns/old-microb.png');
+      overflow: hidden;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 400px;
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 15px;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+      padding: 20px;
+      text-align: center;
+      transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+    }
+
+    .container:hover {
+      transform: scale(1.02);
+      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
+    }
+
+    #openingScreen, #gameScreen {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    #openingScreen h1 {
+      font-size: 2rem;
+      color: #0057e7;
+      margin-bottom: 20px;
+    }
+
+    #openingScreen p {
+      font-size: 1rem;
+      color: #333;
+      margin-bottom: 20px;
+    }
+
+    #startButton {
+      padding: 12px 24px;
+      font-size: 1rem;
+      background-color: #0057e7;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s ease, transform 0.2s ease;
+    }
+
+    #startButton:hover {
+      background-color: #0046c0;
+      transform: scale(1.05);
+    }
+
+    #robozinhoLinkContainer {
+      margin: 20px 0;
+    }
+
+    #robozinhoLink {
+      font-size: 0.9rem;
+      font-weight: bold;
+      color: #0057e7;
+      text-decoration: none;
+      border: 2px solid #0057e7;
+      padding: 8px 16px;
+      border-radius: 8px;
+      position: relative;
+      display: inline-block;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    #robozinhoLink:hover {
+      background-color: #e0f0ff;
+      color: #003c9a;
+    }
+
+    #robozinhoLink::before, #robozinhoLink::after {
+      content: '→';
+      font-size: 1.2rem;
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+
+    #robozinhoLink::before {
+      left: -25px;
+    }
+
+    #robozinhoLink::after {
+      right: -25px;
+    }
+
+    #gameScreen {
+      display: none;
+      text-align: center;
+    }
+
+    #gameScreen h1 {
+      font-size: 1.8rem;
+      margin-bottom: 20px;
+      color: #0057e7;
+    }
+
+    #entryContainer {
+      background-color: #0057e7;
+      border-radius: 15px;
+      padding: 20px;
+      margin: 0 auto;
+      max-width: 340px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    select, button {
+      padding: 10px;
+      margin: 10px 0;
+      font-size: 1rem;
+      border-radius: 8px;
+      border: 2px solid #0057e7;
+      background-color: #fff;
+      color: #0057e7;
+      cursor: pointer;
+      transition: background-color 0.3s ease, transform 0.2s ease;
+    }
+
+    select:hover, button:hover {
+      background-color: #0057e7;
+      color: #fff;
+      transform: scale(1.05);
+    }
+
+    table {
+      border-spacing: 5px;
+      margin: 20px auto;
+    }
+
+    td {
+      width: 50px;
+      height: 50px;
+      text-align: center;
+      vertical-align: middle;
+      border: 2px solid #ddd;
+      border-radius: 8px;
+      font-size: 1.2rem;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    .cell-mine {
+      background-color: #007bff;
+      color: #fff;
+    }
+
+    .cell-star {
+      background-color: #0057e7;
+      color: #fff;
+    }
+
+    #counterContainer {
+      margin: 20px 0;
+    }
+
+    #counterMessage {
+      font-size: 1rem;
+      color: #333;
+      margin-bottom: 10px;
+    }
+
+    #counterBar {
+      width: 100%;
+      height: 15px;
+      background-color: #ddd;
+      border-radius: 10px;
+      overflow: hidden;
+      margin: 0 auto;
+    }
+
+    #counterBar div {
+      width: 0;
+      height: 100%;
+      background-color: #0057e7;
+      transition: width 0.1s ease;
+    }
+
+    #timer {
+      font-size: 1rem;
+      color: #333;
+      margin-top: 10px;
+    }
+
+    .legend {
+      text-align: left;
+      margin-top: 20px;
+      font-size: 0.9rem;
+      max-width: 340px;
+      margin: 0 auto;
+    }
+
+    .legend p {
+      margin: 5px 0;
+      color: #333;
+    }
+
+    .notice {
+      font-size: 0.9rem;
+      color: #ff0000;
+      margin: 20px 0;
+      background: rgba(255, 0, 0, 0.1);
+      padding: 10px;
+      border-radius: 8px;
+      border: 2px solid #ff0000;
+    }
+
+    @media (max-width: 400px) {
+      #startButton, select, button {
+        font-size: 0.9rem;
+        padding: 8px;
+      }
+
+      #robozinhoLink {
+        font-size: 0.9rem;
+        padding: 8px;
+      }
+
+      #gameScreen h1 {
+        font-size: 1.6rem;
+      }
+
+      td {
+        width: 40px;
+        height: 40px;
+        font-size: 1rem;
+      }
+
+      .legend {
+        font-size: 0.8rem;
+      }
+
+      .notice {
+        font-size: 0.8rem;
+        padding: 8px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div id="openingScreen">
+      <h1>Emulador Espião MINES <span class="robot-emoji">🤖</span></h1>
+      <p>Para funcionar, só teste os sinais até 3 vezes e lembre de fazer a meta do dia e sacar</p>
+      <p>Robozinho criado por Nordestino da Forra</p>
+      <div class="notice">
+        Este app foi feito para rodar no Mines da JONBET do Jon Vlogs.
+        </div>
+        <div class="notice">
+          Recomendação testar com banca de R$ 32,00.
+      </div>
+      <div id="robozinhoLinkContainer">
+        <a id="robozinhoLink" href="https://jonbet.cxclick.com/visit/?bta=53082&nci=5348">JOGUE NO MINES DA JONBET</a>
+      </div>
+      <p style="font-size: 0.9rem; margin-top: 10px; color: #333;">CLIQUE NO TEXTO AZUL - É a única plataforma que testamos e deu certo! Só tente 3 vezes por dia.</p>
+      <button id="startButton" onclick="startGame()">Iniciar</button>
+      <button id="vipButton" onclick="window.location.href='https://t.me/+uVWuhQitTt02NTkx'">Grupo Vip</button>
+      
+    </div>
+
+    <div id="gameScreen">
+      <h1>Emulador Espião MINES</h1>
+      <div id="counterContainer">
+        <div id="counterMessage">Carregando o próximo sinal</div>
+        <div id="counterBar"><div></div></div>
+        <div id="timer">Tempo restante: <span id="timeRemaining">10</span> segundos</div>
+      </div>
+      <div id="entryContainer">
+        <label for="numMinesSelect">Escolha o número de entradas:</label>
+        <select id="numMinesSelect">
+          <option value="2">2 entradas - Volatilidade muito baixa, ganho baixo + muito seguro</option>
+          <option value="3">3 entradas - Volatilidade baixa, menor ganho + seguro</option>
+          <option value="4">4 entradas - Volatilidade média, ganho moderado</option>
+          <option value="5">5 entradas - Risco alto + maior ganho</option>
+        </select>
+        <button onclick="showOtherResults()">Liberar outro sinal</button>
+      </div>
+      <table>
+        <tr>
+          <td id="cell-0-0"></td>
+          <td id="cell-0-1"></td>
+          <td id="cell-0-2"></td>
+          <td id="cell-0-3"></td>
+          <td id="cell-0-4"></td>
+        </tr>
+        <tr>
+          <td id="cell-1-0"></td>
+          <td id="cell-1-1"></td>
+          <td id="cell-1-2"></td>
+          <td id="cell-1-3"></td>
+          <td id="cell-1-4"></td>
+        </tr>
+        <tr>
+          <td id="cell-2-0"></td>
+          <td id="cell-2-1"></td>
+          <td id="cell-2-2"></td>
+          <td id="cell-2-3"></td>
+          <td id="cell-2-4"></td>
+        </tr>
+        <tr>
+          <td id="cell-3-0"></td>
+          <td id="cell-3-1"></td>
+          <td id="cell-3-2"></td>
+          <td id="cell-3-3"></td>
+          <td id="cell-3-4"></td>
+        </tr>
+        <tr>
+          <td id="cell-4-0"></td>
+          <td id="cell-4-1"></td>
+          <td id="cell-4-2"></td>
+          <td id="cell-4-3"></td>
+          <td id="cell-4-4"></td>
+        </tr>
+      </table>
+      <div class="legend">
+        <p>2 entradas - Volatilidade muito baixa, ganho baixo + muito seguro</p>
+        <p>3 entradas - Volatilidade baixa, menor ganho + seguro</p>
+        <p>4 entradas - Volatilidade média, ganho moderado</p>
+        <p>5 entradas - Risco alto + maior ganho</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let numMines = 3;
+    const rows = 5;
+    const cols = 5;
+    const board = [];
+
+    function initializeBoard() {
+      board.length = 0;
+      for (let i = 0; i < rows; i++) {
+        board.push([]);
+        for (let j = 0; j < cols; j++) {
+          board[i].push('💣');
+        }
+      }
+
+      let placedMines = 0;
+      while (placedMines < numMines) {
+        const row = Math.floor(Math.random() * rows);
+        const col = Math.floor(Math.random() * cols);
+        if (board[row][col] === '💣') {
+          board[row][col] = '⭐️';
+          placedMines++;
+        }
+      }
+    }
+
+    function updateBoard() {
+      for (let i = 0; i < rows; i++) {
+        for (let j = 0; j < cols; j++) {
+          const cell = document.getElementById(`cell-${i}-${j}`);
+          cell.textContent = board[i][j];
+          if (board[i][j] === '💣') {
+            cell.className = 'cell-mine';
+          } else if (board[i][j] === '⭐️') {
+            cell.className = 'cell-star';
+          } else {
+            cell.className = '';
+          }
+        }
+      }
+    }
+
+    function calculateProbability(row, col) {
+      if (board[row][col] === '⭐️') {
+        return Infinity;
+      } else {
+        let unselectedCells = 0;
+        for (let i = Math.max(0, row - 1); i < Math.min(rows, row + 2); i++) {
+          for (let j = Math.max(0, col - 1); j < Math.min(cols, col + 2); j++) {
+            if (board[i][j] === '💣') {
+              unselectedCells++;
+            }
+          }
+        }
+        return unselectedCells === 0 ? 0 : board[row][col] / unselectedCells;
+      }
+    }
+
+    function selectBestCells() {
+      const cells = [];
+      for (let i = 0; i < rows; i++) {
+        for (let j = 0; j < cols; j++) {
+          cells.push({ row: i, col: j, probability: calculateProbability(i, j) });
+        }
+      }
+
+      cells.sort((a, b) => a.probability - b.probability);
+      return cells.slice(0, 3);
+    }
+
+    function updateCounter() {
+      let progress = 0;
+      let timeRemaining = 10; 
+      const counterBar = document.querySelector("#counterBar div");
+      const counterMessage = document.getElementById("counterMessage");
+      const timeRemainingElement = document.getElementById("timeRemaining");
+
+      const loadingInterval = setInterval(() => {
+        progress += 5;
+        counterBar.style.width = progress + "%";
+
+        if (progress >= 100) {
+          clearInterval(loadingInterval);
+          counterMessage.textContent = "Carregamento completo!";
+          counterBar.style.backgroundColor = "#4CAF50";
+
+          const countdownInterval = setInterval(() => {
+            timeRemaining--;
+            timeRemainingElement.textContent = timeRemaining;
+
+            if (timeRemaining <= 0) {
+              clearInterval(countdownInterval);
+              initializeBoard();
+              updateBoard();
+              const bestCells = selectBestCells();
+              console.log('Melhores células iniciais:', bestCells);
+
+              counterBar.style.width = '0%';
+              counterMessage.textContent = "Carregando o próximo sinal";
+              counterBar.style.backgroundColor = "#0057e7";
+              timeRemainingElement.textContent = '10'; 
+            }
+          }, 1000); 
+        }
+      }, 100);
+    }
+
+    function showOtherResults() {
+      const numMinesSelect = document.getElementById("numMinesSelect");
+      numMines = parseInt(numMinesSelect.value);
+      updateCounter();
+    }
+
+    function startGame() {
+      const openingScreen = document.getElementById("openingScreen");
+      const gameScreen = document.getElementById("gameScreen");
+      openingScreen.style.display = "none";
+      gameScreen.style.display = "block";
+      main();
+    }
+
+    function main() {
+      initializeBoard();
+      updateBoard();
+      const bestCells = selectBestCells();
+      console.log('Melhores células iniciais:', bestCells);
+    }
+  </script>
+</body>
+</html>
